@@ -1,0 +1,51 @@
+DEVOPS Training - Anil Bidari
+
+SDN-Software-defined networking is an approach to computer networking that allows network administrators to programmatically initialize, control, change, and manage network behavior dynamically via open interfaces[1] and abstraction of lower-level functionality. SDN is meant to address the fact that the static architecture of traditional networks doesn't support the dynamic, scalable computing and storage needs of more modern computing environments such as data centers. This is done by decoupling or disassociating the system that makes decisions about where traffic is sent (the SDN controller, or control plane) from the underlying systems that forward traffic to the selected destination (the data plane).
+
+Nuetron is an OVS
+ - Has OVS agent
+ - DHCP agent
+ - L3 agent
+
+Across Nodes - GRE Port tunnel switch - Data port - Tunneling data
+within Nodes - Patch panel
+Tap port - configured as DHCP for your server for every network/can be gateway too
+
+Agile> moved to Devops
+AGILE+Toolset = DEVOPS
+DevOps>Micrososervices(breaking software into multople software modules), issues doesnt impact each other
+Orcherstrating and Automating
+
+JENKINS,Travis,CI,Xebialabs - Orchestrating tool - Like Project Manager, CI/CD tools- Continous Integration/Continous Deployment
+GITHUB/BITBUCKET - Public Clouds for Version control - Public and Private repositories
+SONARQUBE/HP Fortify - Continous Inspection
+MAVEN,ANT,Selenium,Cucumber - Build/Test tools
+Chef/Puppet, Ansible - Configuration Managment
+NewRelic/AppDynamics - Logging tools
+Docker - Container
+
+
+
+Github - repository of developer modules
+Jenkins(CI tool) polls Github and consolidates
+Trigger Job to Slave node(mvn package and deploy)
+(Maven)mvn compile
+mvn package
+configure
+Install tomcat
+Deploy and give URL to you
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

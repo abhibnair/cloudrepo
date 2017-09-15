@@ -1,0 +1,94 @@
+Technical names:
+ESXi - operating system - talks to hardware directly, 1 ESX1 cluster can have 64 VM's with 64 CPU's
+KVM(kerner-based Virtual machine) operatings system-Type2 hypervisor operatings system - ESXi and Vsender for VMWare,KVM will give CPU and memory
+Cloud mgmnt softwares: OpenStack, KVM,Xenserver(Citrix), ESXi, Windows Server(HyperV)
+CLI - command-line interface or command language interpreter (CLI), also known as command-line user interface, console user interface[1] and character user interface (CUI), is a means of interacting with a computer program where the user (or client) issues commands to the program in the form of successive lines of text (command lines). A program which handles the interface is called a command language interpreter or shell.
+
+OpenStack - Private open source Cloud management tool, NOva is a component(for Instance mgmnt), Horizon (Dasboard-GUI interface for managing infra if you do not want to use CLI-comand line interface), CINDER(create, attach and detach Block Storage to Instance), Nuetron (Allow users to create Private network)
+RabbitMQ(Messaging Bus- open source message broker)
+Controller Nodes
+Controller
+ComputeAgents runing on KVM's(Novacompute agents to talk to Nova server)
+Compute Nodes(VM's will be here)
+For scalability - more Controllers, for performance - more Compute Nodes(physical machines)
+Sits on SAN storage
+
+NAT-IP will not be reachable from outside, VM IP should be static
+Bridgered adaptor- is what we use
+PUPPET - scripted instance of OpenStack
+Graphana - monitroing tool - open platform for analytics and monitoring - you can visuallize, alert, unify,extend,collaborate based on data
+
+++++++++++++++++++++++++++++++++++++++
+Working Details:
+++++++++++++++++++++++++++++++++++++++
+
+Consumer>DNS - Public IP>
+
+Hits Machine with HAProxy(LB)/CentOS7(more than 1 LB itself for LB redundancy)
+.
+.
+.
+HAproxy sents hits to contraollers with Open stack(more than 1 controllers and all are Active). HAproxy loadbalances Controllers
+HAproxy has config files with lists of controllers
+Each controllers will have IP+Virtual IP and RabbitMQ(open source message broker), will have copies on all controllers replicated and synchronized(rabbitMq1 informs 2 and then 3 etc on transactions and commands)
+RabbitMQ(Messaging Bus- open source message broker) keeps the transactions for 14 days in case if the acknowledgement from controller does not come back it can direct the request to another controller
+All controllers have knowledge of other controllers
+When req comes, contoller 1 asks KVM(kerner-based Virtual machine) to create a VM using RabbitMQ messaging
+Openstack communincates to Computeagents on KVM(if VMWare it will be ESXi) servers to talk, does not talk directly with KVM
+
+KeepAlive - to get virtual IP
+
+OpenStack components and Amazon Services mapping:
+
+Horizon - req goes to Nova-api for launch instance request-Nova Scheduler>Nova Compute(agent)(NOVA Computeagents are installed on all KVM computenodes)
+	Amazon equivalent: AWA.AMAZON.COM
+	Nova: AMAZON ECE
+CINDER: 2 types of Volume services: Nova Volume service, CINDER Volume service. CINDER Idea is to have separate Volume backup of the same instance so that if the instance does not boot also, we have a backup of the volume(ex: D:\ of that instance).
+	Amazon eq: Elastic Block Store
+Netron: 
+	Amazon VPC(allows user to create and assign networks)-Ex: create VM's and subnets and Virtual routers
+Swift - 
+	Amazon S3 - File system based Storage, CINDER snapshots can be stored in Swift, by default VM snapshots are stored in SAN. Idea of swift is keep VM and snapshots NOT on same SAN in case of an issue with SAN
+KeyStone - Authenticate and authorize users(Horizon sends data to Keystone for auth), has its own DB to store cred
+	AWS: Identity Access mgmnt
+Glance : Register  and store Image Templates for use by others
+	Amazon Machine Images
+Nuetron
+	LbaaS - Offer Load Balancer as a Service(Load balance NOVA VM Instances, webservers etc with any TCPIP ports, Not individual controllers), Assign IP to VM
+	Amazon Elastic Load balancing
+Trove   Offer Database as a Service
+	Amazon RDS
+
+
+req goes to Nova-api for launch instance request-Nova Scheduler>Nova Compute(agent)(NOVA Computeagents are installed on all KVM computenodes)>Nova Conductor
+
+OpenStack Nova(hypervisor compute support) - It supports many like UML, Xen,Baremetal,Docker,KVM,HyperV,Vmware etc
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Architecture
+
+Openstack Nova Integration with KVM Host: Its similar with Hyper V reg management
+
+Horizon
+Cinder Nuetron(network Node)
+Nova Scheduler
+Keystone    Glance
+Rabbit MQ   MY SQL
+Linux OZ (RHEL,/Ubuntu/Cent OS
+Controller Node
+
+Nova Compute agent
+KVM
+Linux OS
+Compute Node 01
+
+Nova Compute agent
+KVM
+Linux OS
+Compute Node 02
+
+Shared Storage (SAN)
+
+NOva Scheduler on Controller Node talks to Nova Compute on diff Controller Nodes
+
+
+
